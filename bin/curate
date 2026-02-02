@@ -1,0 +1,85 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'colorize'
+require_relative '../lib/database'
+require_relative '../lib/curator'
+
+# Parse command line options
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: curate [options]"
+
+  opts.on("-r", "--run", "Run curation now") do
+    options[:run] = true
+  end
+
+  opts.on("-s", "--show", "Show today's articles") do
+    options[:show] = true
+  end
+
+  opts.on("-f", "--feedback ID", Integer, "Provide feedback on article") do |id|
+    options[:feedback] = id
+  end
+
+  opts.on("-l", "--like", "Like the article (use with --feedback)") do
+    options[:like] = true
+  end
+
+  opts.on("-d", "--dislike", "Dislike the article (use with --feedback)") do
+    options[:like] = false
+  end
+
+  opts.on("-h", "--help", "Show this help") do
+    puts opts
+    exit
+  end
+end.parse!
+
+# Setup database
+Database.setup!
+
+curator = Curator.new
+
+if options[:run]
+  puts "[INFO] Running curation...".colorize(:cyan)
+  result = curator.run_daily_curation
+
+  if result[:success]
+    puts "\n[OK] Success! #{result[:articles].size} articles curated.".colorize(:green)
+  else
+    puts "\n[ERROR] Failed: #{result[:error]}".colorize(:red)
+  end
+
+elsif options[:show]
+  articles = curator.get_todays_articles
+
+  if articles.empty?
+    puts "No articles curated for today. Run: curate --run".colorize(:yellow)
+  else
+    articles.each_with_index do |article, idx|
+      puts "\n#{idx + 1}. #{article.title}".colorize(:cyan)
+      puts "   Source: #{article.source_name}".colorize(:light_black)
+      puts "   Score: #{article.relevance_score}/10 | #{article.category}".colorize(:yellow)
+      puts "   Why: #{article.curation_reason}".colorize(:white)
+      puts "   URL: #{article.url}".colorize(:blue)
+      puts "   ID: #{article.id}".colorize(:light_black)
+    end
+  end
+
+elsif options[:feedback]
+  if options[:like].nil?
+    puts "[ERROR] Please specify --like or --dislike".colorize(:red)
+    exit 1
+  end
+
+  curator.provide_feedback(options[:feedback], liked: options[:like])
+
+else
+  puts "News Curator - Use --help for options".colorize(:cyan)
+  puts "\nQuick commands:".colorize(:yellow)
+  puts "  curate --run          # Run curation now"
+  puts "  curate --show         # Show today's articles"
+  puts "  curate --feedback ID --like    # Like an article"
+  puts "  curate --feedback ID --dislike # Dislike an article"
+end
