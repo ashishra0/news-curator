@@ -1,0 +1,58 @@
+# Environment variables
+.env
+
+# Database
+db/*.db
+db/*.sqlite3
+db/*.db-shm
+db/*.db-wal
+
+# Logs
+*.log
+logs/*.log
+nohup.out
+
+# Ruby
+*.gem
+*.rbc
+.bundle
+.config
+coverage/
+InstalledFiles
+lib/bundler/man
+pkg/
+rdoc/
+spec/reports/
+test/tmp/
+test/version_tmp/
+tmp/
+.ruby-version
+.ruby-gemset
+
+# Python (old - cleanup)
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+.DS_Store
+Thumbs.db
+*.bak
+
+# Local Claude settings
+.claude/
+
+# Old output files
+todays_news.md
