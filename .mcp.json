@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "news-curator": {
+      "command": "ruby",
+      "args": ["mcp_server.rb"]
+    }
+  }
+}
