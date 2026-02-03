@@ -10,6 +10,12 @@ AI-powered news curation for foreign policy and diplomacy. Built with Ruby and C
 - Learns from your feedback over time
 - Access via `/news` command in Claude Code
 
+## Screenshot
+
+![News Curator in Action](pulse.jpg)
+
+*The `/pulse` command showing curated foreign policy and diplomacy news*
+
 ## Quick Start
 
 ```bash
